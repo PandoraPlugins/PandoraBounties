@@ -34,13 +34,13 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
         super(player);
         super.inv = this.createInventory();
         super.player.openInventory(this.inv);
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
         methods.put("bountiesOnPlayer", this::bountiesOnPlayer);
 
     }
 
     private void bountiesOnPlayer(){
         new PlayerBounty(this.player);
+        unregister();
     }
 
     @Override

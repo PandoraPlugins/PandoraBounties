@@ -27,7 +27,7 @@ public abstract class Inventory implements Listener {
     protected Player player;
     protected boolean swapInvs = false;
     protected org.bukkit.inventory.Inventory inv;
-    protected PandoraBounties plugin;
+    protected PandoraBounties plugin = PandoraBounties.getPlugin(PandoraBounties.class);
 
     public Inventory(Player player){
         this.player = player;
@@ -37,9 +37,9 @@ public abstract class Inventory implements Listener {
     }
 
     protected org.bukkit.inventory.Inventory swapInvs(org.bukkit.inventory.Inventory newInv){
-        if(!swapInvs)
-        this.player.openInventory(newInv);
         swapInvs = true;
+        this.player.openInventory(newInv);
+        swapInvs = false;
         return this.player.getOpenInventory().getTopInventory();
     }
 
@@ -57,7 +57,7 @@ public abstract class Inventory implements Listener {
     }
 
     @EventHandler
-    protected void onInvClose(InventoryCloseEvent event) throws Throwable {
+    public void onInvClose(InventoryCloseEvent event) throws Throwable {
         if(!swapInvs){
             this.unregister();
             this.finalize();
@@ -65,7 +65,8 @@ public abstract class Inventory implements Listener {
     }
 
     @EventHandler
-    protected void onInvClick(InventoryClickEvent event){
+    public void onInvClick(InventoryClickEvent event){
+        System.out.println(123);
         if(event.getInventory().equals(this.inv)){
             ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.valueOf("CLICK"), 2, 1);
             event.setCancelled(true);
