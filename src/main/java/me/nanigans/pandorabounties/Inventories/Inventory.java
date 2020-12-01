@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -23,11 +24,12 @@ interface Actions{
 
 
 public abstract class Inventory implements Listener {
-    protected static Map<String, Actions> methods = new HashMap<>();
+    protected Map<String, Actions> methods = new HashMap<>();
     protected Player player;
     protected boolean swapInvs = false;
     protected org.bukkit.inventory.Inventory inv;
-    protected PandoraBounties plugin = PandoraBounties.getPlugin(PandoraBounties.class);
+    protected static PandoraBounties plugin = PandoraBounties.getPlugin(PandoraBounties.class);
+    protected ClickType click;
 
     public Inventory(Player player){
         this.player = player;
@@ -37,14 +39,10 @@ public abstract class Inventory implements Listener {
     }
 
     protected org.bukkit.inventory.Inventory swapInvs(org.bukkit.inventory.Inventory newInv){
-        swapInvs = true;
+        this.swapInvs = true;
         this.player.openInventory(newInv);
-        swapInvs = false;
+        this.swapInvs = false;
         return this.player.getOpenInventory().getTopInventory();
-    }
-
-    protected void unregister(){
-        HandlerList.unregisterAll(this);
     }
 
 
@@ -59,7 +57,6 @@ public abstract class Inventory implements Listener {
     @EventHandler
     public void onInvClose(InventoryCloseEvent event) throws Throwable {
         if(!swapInvs){
-            this.unregister();
             this.finalize();
         }
     }
@@ -70,7 +67,7 @@ public abstract class Inventory implements Listener {
             ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.valueOf("CLICK"), 2, 1);
             event.setCancelled(true);
             if(event.getCurrentItem() != null){
-
+                click = event.getClick();
                 ItemStack item = event.getCurrentItem();
                 final String method = NBTData.getNBT(item, "METHOD");
                 if(method != null){

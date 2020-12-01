@@ -4,18 +4,14 @@ import com.earth2me.essentials.Essentials;
 import me.nanigans.pandorabounties.PandoraBounties;
 import me.nanigans.pandorabounties.Utils.Config.Config;
 import me.nanigans.pandorabounties.Utils.Config.YamlGenerator;
-import me.nanigans.pandorabounties.Utils.NBTData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.io.File;
@@ -33,7 +29,7 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
     public BountyInventory(Player player){
         super(player);
         super.inv = this.createInventory();
-        super.player.openInventory(this.inv);
+        super.swapInvs(super.inv);
         methods.put("bountiesOnPlayer", this::bountiesOnPlayer);
         methods.put("allBounties", this::allBounties);
 
@@ -41,7 +37,6 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
 
     private void bountiesOnPlayer(){
         new PlayerBounty(this.player);
-        unregister();
     }
 
     @Override
@@ -69,7 +64,6 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
 
     protected void allBounties(){
         new AllBounties(this.player);
-        unregister();
     }
 
 

@@ -25,7 +25,7 @@ public class PlayerBounty extends me.nanigans.pandorabounties.Inventories.Invent
 
     public PlayerBounty(Player player) {
         super(player);
-        inv = swapInvs(createInventory());
+        super.inv = swapInvs(createInventory());
         methods.put("back", this::back);
     }
 
@@ -52,7 +52,6 @@ public class PlayerBounty extends me.nanigans.pandorabounties.Inventories.Invent
 
     private void back(){
         new BountyInventory(this.player);
-        unregister();
     }
 
     @Override

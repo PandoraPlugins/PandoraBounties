@@ -1,9 +1,7 @@
 package me.nanigans.pandorabounties.Commands;
 
 import me.nanigans.pandorabounties.Inventories.BountyInventory;
-import me.nanigans.pandorabounties.PandoraBounties;
 import me.nanigans.pandorabounties.Utils.Config.Config;
-import me.nanigans.pandorabounties.Utils.Config.YamlGenerator;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,14 +9,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.Map;
-
 public class Bounty implements CommandExecutor {
-    private final PandoraBounties plugin = PandoraBounties.getPlugin(PandoraBounties.class);
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
