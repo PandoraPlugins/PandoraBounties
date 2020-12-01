@@ -1,0 +1,10 @@
+name: PandoraBounties
+version: ${project.version}
+main: me.nanigans.pandorabounties.PandoraBounties
+authors: [ProNanigans]
+description: A Custom Bounty Plugin for PandoraPVP
+depend: [Essentials]
+commands:
+  bounty:
+    description: "Place a bounty on a players head"
+    usage: /bounty
