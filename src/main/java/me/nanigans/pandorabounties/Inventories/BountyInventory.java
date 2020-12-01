@@ -5,12 +5,14 @@ import me.nanigans.pandorabounties.PandoraBounties;
 import me.nanigans.pandorabounties.Utils.Config.Config;
 import me.nanigans.pandorabounties.Utils.Config.YamlGenerator;
 import me.nanigans.pandorabounties.Utils.NBTData;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,48 +25,22 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inventory implements Listener{
+public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inventory{
 
     private int page = 0;
     private static final PandoraBounties plugin = PandoraBounties.getPlugin(PandoraBounties.class);
-    private Inventory inv;
 
     public BountyInventory(Player player){
         super(player);
-        this.inv = createInventory();
+        super.inv = this.createInventory();
         super.player.openInventory(this.inv);
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         methods.put("bountiesOnPlayer", this::bountiesOnPlayer);
 
     }
 
-
-    @EventHandler
-    public void onInvClick(InventoryClickEvent event){
-
-        if(event.getInventory().equals(inv)){
-            ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.valueOf("CLICK"), 2, 1);
-            event.setCancelled(true);
-            if(event.getCurrentItem() != null){
-
-                ItemStack item = event.getCurrentItem();
-                final String method = NBTData.getNBT(item, "METHOD");
-                if(method != null){
-
-                    super.execute(method);
-
-                }
-
-            }
-
-        }
-
-    }
-
     private void bountiesOnPlayer(){
-
-
-
+        new PlayerBounty(this.player);
     }
 
     @Override
@@ -72,7 +48,6 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
 
         File file = new File(plugin.path);
         File[] files = file.listFiles();
-        System.out.println("this.page = " + this.page);
         if(files != null && files.length >= 45*(this.page+1)) {
             this.page++;
             final Inventory inventory = this.createInventory();
