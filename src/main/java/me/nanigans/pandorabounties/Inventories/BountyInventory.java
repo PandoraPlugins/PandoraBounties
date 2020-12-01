@@ -35,6 +35,7 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
         super.inv = this.createInventory();
         super.player.openInventory(this.inv);
         methods.put("bountiesOnPlayer", this::bountiesOnPlayer);
+        methods.put("allBounties", this::allBounties);
 
     }
 
@@ -64,6 +65,11 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
         final Inventory inv = this.createInventory();
         this.inv = swapInvs(inv);
 
+    }
+
+    protected void allBounties(){
+        new AllBounties(this.player);
+        unregister();
     }
 
 
@@ -110,6 +116,7 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
         inv.setItem(inv.getSize()-6, createItem(Material.PAPER, "Balance: $"+ChatColor.GREEN+
                 Essentials.getPlugin(Essentials.class).getUser(this.player).getMoney()));
         inv.setItem(inv.getSize()-4, createItem(Material.BOOK, "Bounties placed on You", "METHOD~bountiesOnPlayer"));
+        inv.setItem(inv.getSize()-3, createItem(Material.BOOKSHELF, "All bounties", "METHOD~allBounties"));
 
         return inv;
     }

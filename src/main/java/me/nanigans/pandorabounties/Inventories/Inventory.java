@@ -66,7 +66,6 @@ public abstract class Inventory implements Listener {
 
     @EventHandler
     public void onInvClick(InventoryClickEvent event){
-        System.out.println(123);
         if(event.getInventory().equals(this.inv)){
             ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.valueOf("CLICK"), 2, 1);
             event.setCancelled(true);
