@@ -114,18 +114,6 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
         return inv;
     }
 
-    private static ItemStack createItem(Material mat, String name, String... nbt){
-
-        ItemStack item = new ItemStack(mat);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(name);
-        item.setItemMeta(meta);
-        if(nbt.length > 0)
-            item = NBTData.setNBT(item, nbt);
-        return item;
-
-    }
-
     public Inventory getInv() {
         return inv;
     }

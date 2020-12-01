@@ -2,6 +2,7 @@ package me.nanigans.pandorabounties.Inventories;
 
 import me.nanigans.pandorabounties.PandoraBounties;
 import me.nanigans.pandorabounties.Utils.NBTData;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,6 +82,18 @@ public abstract class Inventory implements Listener {
             }
 
         }
+    }
+
+    protected static ItemStack createItem(Material mat, String name, String... nbt){
+
+        ItemStack item = new ItemStack(mat);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(name);
+        item.setItemMeta(meta);
+        if(nbt.length > 0)
+            item = NBTData.setNBT(item, nbt);
+        return item;
+
     }
 
     protected abstract org.bukkit.inventory.Inventory createInventory();
