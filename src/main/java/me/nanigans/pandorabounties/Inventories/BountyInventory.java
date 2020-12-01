@@ -5,10 +5,7 @@ import me.nanigans.pandorabounties.PandoraBounties;
 import me.nanigans.pandorabounties.Utils.Config.Config;
 import me.nanigans.pandorabounties.Utils.Config.YamlGenerator;
 import me.nanigans.pandorabounties.Utils.NBTData;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,12 +28,13 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
     private int page = 0;
     private static final PandoraBounties plugin = PandoraBounties.getPlugin(PandoraBounties.class);
     private Inventory inv;
-    private final BountyActions actions = new BountyActions(this);
 
     public BountyInventory(Player player){
         super(player);
         this.inv = createInventory();
         super.player.openInventory(this.inv);
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        methods.put("bountiesOnPlayer", this::bountiesOnPlayer);
 
     }
 
@@ -45,7 +43,8 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
     public void onInvClick(InventoryClickEvent event){
 
         if(event.getInventory().equals(inv)){
-
+            ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.valueOf("CLICK"), 2, 1);
+            event.setCancelled(true);
             if(event.getCurrentItem() != null){
 
                 ItemStack item = event.getCurrentItem();
@@ -71,13 +70,24 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
     @Override
     protected void pageForward(){
 
-        final Inventory inv = info.getInv();
+        File file = new File(plugin.path);
+        File[] files = file.listFiles();
+        System.out.println("this.page = " + this.page);
+        if(files != null && files.length >= 45*(this.page+1)) {
+            this.page++;
+            final Inventory inventory = this.createInventory();
+            this.inv = swapInvs(inventory);
 
+        }
 
     }
 
     @Override
     protected void pageBackwards(){
+
+        this.setPage(this.getPage()-1);
+        final Inventory inv = this.createInventory();
+        this.inv = swapInvs(inv);
 
     }
 
@@ -88,18 +98,20 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
         Inventory inv = Bukkit.createInventory(this.player, 54, "Your Placed Bounties");
 
         File file = new File(plugin.path);
-        if(file.listFiles() != null) {
-            for (File listFile : file.listFiles()) {
+        File[] files = file.listFiles();
+        if(files != null) {
+            for (int i = (45*this.page); i < files.length*(this.page+1); i++) {
+                File listFile = files[i];
                 if (listFile.getAbsolutePath().endsWith(".yml")) {
                     YamlGenerator yaml = new YamlGenerator(listFile.getAbsolutePath());
                     final Map<String, Object> bounty = Config.yamlContainsPlayer(this.player, yaml);
                     if (bounty != null) {
 
-                        if (inv.getItem(53) == null) {
+                        if (inv.getItem(44) == null) {
 
                             final FileConfiguration data = yaml.getData();
                             final List<Map<String, Object>> bounties = (List<Map<String, Object>>) data.getList("bounties");
-                            double total = bounties.stream().mapToDouble(i -> Double.parseDouble(i.get("amount").toString())).reduce(0, Double::sum);
+                            double total = bounties.stream().mapToDouble(j -> Double.parseDouble(j.get("amount").toString())).reduce(0, Double::sum);
 
                             String uuidStr = listFile.getName().replace(".yml", "");
                             OfflinePlayer uuid = Bukkit.getOfflinePlayer(UUID.fromString(uuidStr));

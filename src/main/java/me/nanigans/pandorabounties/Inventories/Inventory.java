@@ -18,11 +18,19 @@ public abstract class Inventory implements Listener {
     protected static Map<String, Actions> methods = new HashMap<>();
     protected BountyInventory info;
     protected Player player;
+    protected boolean swapInvs = false;
 
     public Inventory(Player player){
         this.player = player;
         methods.put("pageForward", this::pageForward);
         methods.put("pageBackwards", this::pageBackwards);
+    }
+
+    protected org.bukkit.inventory.Inventory swapInvs(org.bukkit.inventory.Inventory newInv){
+        if(!swapInvs)
+        this.player.openInventory(newInv);
+        swapInvs = true;
+        return this.player.getOpenInventory().getTopInventory();
     }
 
     protected abstract void pageForward();
