@@ -2,6 +2,7 @@ package me.nanigans.pandorabounties.Inventories;
 
 import me.nanigans.pandorabounties.PandoraBounties;
 import me.nanigans.pandorabounties.Utils.Config.Config;
+import me.nanigans.pandorabounties.Utils.JsonUtils;
 import me.nanigans.pandorabounties.Utils.NBTData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -97,7 +98,6 @@ public abstract class Inventory implements Listener {
                         SkullMeta sMeta = (SkullMeta) meta;
                         Player head = Bukkit.getPlayer(sMeta.getOwner());
                         if(Config.removePlayerBounty(player, head)) {
-                            player.sendMessage(ChatColor.GREEN + "Removed your bounty from: " + ChatColor.YELLOW + head.getName());
                             inv.removeItem(item);
                         }
 

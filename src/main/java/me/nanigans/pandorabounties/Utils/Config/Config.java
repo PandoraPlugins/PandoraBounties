@@ -2,6 +2,7 @@ package me.nanigans.pandorabounties.Utils.Config;
 
 import com.earth2me.essentials.Essentials;
 import me.nanigans.pandorabounties.PandoraBounties;
+import me.nanigans.pandorabounties.Utils.JsonUtils;
 import net.ess3.api.MaxMoneyException;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -42,17 +43,32 @@ public class Config {
         if(setBy != null){
             if(amount > 0) {
                 setBy.put("amount", amount);
-                playerSet.sendMessage(ChatColor.GREEN+"Updated the amount on this player!");
+                playerSet.sendMessage(JsonUtils.getData("messages.private.bountyAdd")
+                        .replaceAll("\\{player}", playerSet.getName()).replaceAll("\\{amount}", String.valueOf(amount)));
+                playerSet.sendMessage(JsonUtils.getData("messages.global.bountyAdd")
+                        .replaceAll("\\{player}", playerSet.getName()).replaceAll("\\{amount}", String.valueOf(amount))
+                        .replaceAll("\\{bounty_player}", bounty.getName()));
+
             }else if(amount == 0){
                 bounties.remove(setBy);
-                playerSet.sendMessage(ChatColor.GREEN+"Removed your bounty from this player");
+                playerSet.sendMessage(JsonUtils.getData("messages.private.bountyRemove")
+                        .replaceAll("\\{player}", playerSet.getName()).replaceAll("\\{amount}", setBy.get("amount").toString()));
+                playerSet.sendMessage(JsonUtils.getData("messages.global.bountyRemove")
+                        .replaceAll("\\{player}", playerSet.getName()).replaceAll("\\{amount}", setBy.get("amount").toString())
+                        .replaceAll("\\{bounty_player}", bounty.getName()));
+
             }
         }else{
             Map<String, Object> newBounty = new HashMap<>();
             newBounty.put("setBy", playerSet.getUniqueId().toString());
             newBounty.put("amount", amount);
             bounties.add(newBounty);
-            playerSet.sendMessage(ChatColor.GREEN+"Bounty Added!");
+            playerSet.sendMessage(JsonUtils.getData("messages.private.bountyAdd")
+                    .replaceAll("\\{player}", playerSet.getName()).replaceAll("\\{amount}", String.valueOf(amount)));
+            playerSet.sendMessage(JsonUtils.getData("messages.global.bountyAdd")
+                    .replaceAll("\\{player}", playerSet.getName()).replaceAll("\\{amount}", String.valueOf(amount))
+                    .replaceAll("\\{bounty_player}", bounty.getName()));
+
         }
         data.set("bounties", bounties);
 
@@ -60,6 +76,12 @@ public class Config {
 
     }
 
+    /**
+     * Removes a bounty listing from a player
+     * @param playerToRemove the player to remove
+     * @param removingFrom the player that is being removed from
+     * @return weather it was successful or not
+     */
     public static boolean removePlayerBounty(Player playerToRemove, OfflinePlayer removingFrom){
         PandoraBounties plugin = PandoraBounties.getPlugin(PandoraBounties.class);
 
@@ -75,6 +97,11 @@ public class Config {
             bounties.remove(bounty);
             data.set("bounties", bounties);
             yaml.save();
+            playerToRemove.sendMessage(JsonUtils.getData("messages.private.bountyRemove")
+                    .replaceAll("\\{player}", playerToRemove.getName()).replaceAll("\\{amount}", bounty.get("amount").toString()));
+            playerToRemove.sendMessage(JsonUtils.getData("messages.global.bountyRemove")
+                    .replaceAll("\\{player}", playerToRemove.getName()).replaceAll("\\{amount}", bounty.get("amount").toString())
+                    .replaceAll("\\{bounty_player}", removingFrom.getName()));
             return true;
         }
         return false;
@@ -115,37 +142,5 @@ public class Config {
         }
 
     }
-
-
-
-    /**
-     * Returns a {@link Map} representative of the passed Object that represents
-     * a section of a YAML file. This method neglects the implementation of the
-     * section (whether it be {@link ConfigurationSection} or just a
-     * {@link Map}), and returns the appropriate value.
-     *
-     * @since 0.1.0
-     * @version 0.1.0
-     *
-     * @param o The object to interpret
-     * @param deep If an object is a {@link ConfigurationSection}, {@code true} to do a deep search
-     * @return A {@link Map} representing the section
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> Map<String, T> getConfigSectionValue(Object o, boolean deep) {
-        if (o == null) {
-            return null;
-        }
-        Map<String, T> map;
-        if (o instanceof ConfigurationSection) {
-            map = (Map<String, T>) ((ConfigurationSection) o).getValues(deep);
-        } else if (o instanceof Map) {
-            map = (Map<String, T>) o;
-        } else {
-            return null;
-        }
-        return map;
-    }
-
 
 }

@@ -3,9 +3,9 @@ package me.nanigans.pandorabounties.Commands;
 import com.earth2me.essentials.Essentials;
 import me.nanigans.pandorabounties.Inventories.BountyInventory;
 import me.nanigans.pandorabounties.Utils.Config.Config;
+import me.nanigans.pandorabounties.Utils.JsonUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -45,18 +45,20 @@ public class Bounty implements CommandExecutor {
                                 return true;
 
                             }else{
-                                player.sendMessage(ChatColor.RED+"Please enter a valid number");
+                                player.sendMessage(JsonUtils.getData("messages.errors.invalidBountyAmt"));
+
                                 return false;
                             }
 
                         }else{
-                            player.sendMessage(ChatColor.RED+"Could not find this player");
+                            player.sendMessage(JsonUtils.getData("messages.errors.invalidPlayer"));
                             return true;
                         }
 
                     }
                     default:{
-                        player.sendMessage(ChatColor.RED+"Please specify who to place a bounty on and the amount");
+
+                        player.sendMessage(JsonUtils.getData("messages.errors.cmdFormatException"));
                         return false;
                     }
                 }

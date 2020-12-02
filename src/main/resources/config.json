@@ -1,0 +1,20 @@
+{
+  "messages": {
+    "_comment": "If you want no message, leave an empty string",
+    "global": {
+      "bountyAdd": "&6{player} has set a bounty for {bounty_player} for a price of ${amount}",
+      "bountyRemove": "&6{player} has removed their bounty from {bounty_player} of a price ${amount}",
+      "bountyKill": "{player} has claimed the bounty from {bounty_player} of a price ${amount}"
+    },
+    "private": {
+      "bountyAdd": "&6Added bounty to: {player} for ${amount}",
+      "bountyRemove": "&6Removed bounty from {player}",
+      "bountyKill": "Bounty claimed from {player} at a price of ${amount}"
+    },
+    "errors": {
+      "invalidBountyAmt": "Please enter a valid number",
+      "invalidPlayer": "Could not find this player",
+      "cmdFormatException": "Please specify who to place a bounty on and the amount"
+    }
+  }
+}

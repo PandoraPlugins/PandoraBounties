@@ -3,8 +3,8 @@ package me.nanigans.pandorabounties.Events;
 import com.earth2me.essentials.Essentials;
 import me.nanigans.pandorabounties.PandoraBounties;
 import me.nanigans.pandorabounties.Utils.Config.YamlGenerator;
+import me.nanigans.pandorabounties.Utils.JsonUtils;
 import net.ess3.api.MaxMoneyException;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,8 +34,11 @@ public class Events implements Listener {
             double amt = bounties.stream().mapToDouble(i -> Double.parseDouble(i.get("amount").toString())).reduce(0, Double::sum);
             Essentials.getPlugin(Essentials.class).getUser(killer).giveMoney(BigDecimal.valueOf(amt));
             file.delete();
-            killer.sendMessage(ChatColor.GREEN+"Bounty from player: " + died.getName() + " received!");
-
+            killer.sendMessage(JsonUtils.getData("messages.private.bountyKill")
+                    .replaceAll("\\{player}", died.getName()).replaceAll("\\{amount}", String.valueOf(amt)));
+            killer.sendMessage(JsonUtils.getData("messages.global.bountyKill")
+                    .replaceAll("\\{player}", killer.getName()).replaceAll("\\{amount}", String.valueOf(amt))
+            .replaceAll("\\{bounty_player}", died.getName()));
         }
 
     }
