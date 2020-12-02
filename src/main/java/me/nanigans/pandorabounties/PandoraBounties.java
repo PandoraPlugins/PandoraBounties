@@ -1,6 +1,7 @@
 package me.nanigans.pandorabounties;
 
 import me.nanigans.pandorabounties.Commands.Bounty;
+import me.nanigans.pandorabounties.Events.Events;
 import me.nanigans.pandorabounties.Utils.Config.Config;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,6 +15,7 @@ public final class PandoraBounties extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         getCommand("bounty").setExecutor(new Bounty());
+        getServer().getPluginManager().registerEvents(new Events(), this);
         try {
             Config.createAHConfigFolder("");
         } catch (IOException e) {
