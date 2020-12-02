@@ -23,7 +23,7 @@ public class AllBounties extends Inventory{
     public AllBounties(Player player) {
         super(player);
         sort = Sortings.HIGHEST_PRICE;
-        super.inv = swapInvs(createInventory());
+        swapInvs(createInventory());
         methods.put("back", this::back);
         methods.put("sort", this::sort);
     }
@@ -39,7 +39,7 @@ public class AllBounties extends Inventory{
                 sort = Sortings.OLDEST_BIDS;
             else sort = Sortings.getSortByNum(sort.getNumVal()-1);
         }
-        this.inv = swapInvs(createInventory());
+        swapInvs(createInventory());
     }
 
     @Override

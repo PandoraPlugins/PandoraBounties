@@ -1,18 +1,22 @@
 package me.nanigans.pandorabounties.Inventories;
 
 import me.nanigans.pandorabounties.PandoraBounties;
+import me.nanigans.pandorabounties.Utils.Config.Config;
 import me.nanigans.pandorabounties.Utils.NBTData;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,11 +42,16 @@ public abstract class Inventory implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    protected org.bukkit.inventory.Inventory swapInvs(org.bukkit.inventory.Inventory newInv){
-        this.swapInvs = true;
-        this.player.openInventory(newInv);
-        this.swapInvs = false;
-        return this.player.getOpenInventory().getTopInventory();
+    protected void swapInvs(org.bukkit.inventory.Inventory newInv){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                swapInvs = true;
+                player.openInventory(newInv);
+                swapInvs = false;
+                inv = newInv;
+            }
+        }.runTask(plugin);
     }
 
 
@@ -50,8 +59,14 @@ public abstract class Inventory implements Listener {
     protected abstract void pageBackwards();
 
     protected void execute(String method){
-        if(methods.containsKey(method))
-            methods.get(method).execute();
+        if(methods.containsKey(method)) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    methods.get(method).execute();
+                }
+            }.runTaskAsynchronously(plugin);
+        }
     }
 
     @EventHandler
@@ -69,10 +84,24 @@ public abstract class Inventory implements Listener {
             if(event.getCurrentItem() != null){
                 click = event.getClick();
                 ItemStack item = event.getCurrentItem();
-                final String method = NBTData.getNBT(item, "METHOD");
-                if(method != null){
 
-                    this.execute(method);
+                if(event.getAction().toString().toLowerCase().contains("pickup")) {
+                    final String method = NBTData.getNBT(item, "METHOD");
+                    if (method != null) {
+                        this.execute(method);
+                    }
+                }else if(event.getAction().toString().toLowerCase().contains("drop")){
+
+                    ItemMeta meta = item.getItemMeta();
+                    if(meta instanceof SkullMeta && item.getType() == Material.SKULL_ITEM){
+                        SkullMeta sMeta = (SkullMeta) meta;
+                        Player head = Bukkit.getPlayer(sMeta.getOwner());
+                        if(Config.removePlayerBounty(player, head)) {
+                            player.sendMessage(ChatColor.GREEN + "Removed your bounty from: " + ChatColor.YELLOW + head.getName());
+                            inv.removeItem(item);
+                        }
+
+                    }
 
                 }
 

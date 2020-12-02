@@ -1,6 +1,8 @@
 package me.nanigans.pandorabounties.Utils.Config;
 
+import com.earth2me.essentials.Essentials;
 import me.nanigans.pandorabounties.PandoraBounties;
+import net.ess3.api.MaxMoneyException;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,7 +29,7 @@ public class Config {
      * @param bounty the player being put a bounty on
      * @param amount the amount to put the bounty
      */
-    public static void setPlayerBounty(Player playerSet, OfflinePlayer bounty, double amount){
+    public static void setPlayerBounty(Player playerSet, OfflinePlayer bounty, double amount) {
 
         PandoraBounties plugin = PandoraBounties.getPlugin(PandoraBounties.class);
 
@@ -56,6 +59,33 @@ public class Config {
         yaml.save();
 
     }
+
+    public static boolean removePlayerBounty(Player playerToRemove, OfflinePlayer removingFrom){
+        PandoraBounties plugin = PandoraBounties.getPlugin(PandoraBounties.class);
+
+        final YamlGenerator yaml = new YamlGenerator(plugin.path+"/"+removingFrom.getUniqueId()+".yml");
+        final FileConfiguration data = yaml.getData();
+        final List<Map<String, Object>> bounties = (List<Map<String, Object>>) data.getList("bounties");
+        final Map<String, Object> bounty = yamlContainsPlayer(playerToRemove, yaml);
+        if(bounty != null) {
+            try {
+                Essentials.getPlugin(Essentials.class).getUser(playerToRemove).giveMoney(BigDecimal.valueOf(Double.parseDouble(bounty.get("amount").toString())));
+            } catch (MaxMoneyException ignored) {
+            }
+            bounties.remove(bounty);
+            data.set("bounties", bounties);
+            yaml.save();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a yaml file contains a bounty set by a player. If so, it'll return that object
+     * @param player the player that might be in a file
+     * @param yaml the yaml file to check
+     * @return the player object if it exists else null
+     */
 
     public static Map<String, Object> yamlContainsPlayer(Player player, YamlGenerator yaml){
         final FileConfiguration data = yaml.getData();

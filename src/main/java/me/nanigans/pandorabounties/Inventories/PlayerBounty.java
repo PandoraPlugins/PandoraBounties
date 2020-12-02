@@ -25,7 +25,7 @@ public class PlayerBounty extends me.nanigans.pandorabounties.Inventories.Invent
 
     public PlayerBounty(Player player) {
         super(player);
-        super.inv = swapInvs(createInventory());
+        swapInvs(createInventory());
         methods.put("back", this::back);
     }
 
@@ -39,7 +39,7 @@ public class PlayerBounty extends me.nanigans.pandorabounties.Inventories.Invent
             final List<?> bounties = data.getList("bounties");
             if(bounties.size() >= 45*(this.page+1)) {
                 this.page++;
-                inv = swapInvs(createInventory());
+                swapInvs(createInventory());
             }
         }
     }
@@ -47,7 +47,7 @@ public class PlayerBounty extends me.nanigans.pandorabounties.Inventories.Invent
     @Override
     protected void pageBackwards() {
         this.page = Math.max(this.page-1, 0);
-        inv = swapInvs(createInventory());
+        swapInvs(createInventory());
     }
 
     private void back(){

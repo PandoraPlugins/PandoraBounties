@@ -47,7 +47,7 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
         if(files != null && files.length >= 45*(this.page+1)) {
             this.page++;
             final Inventory inventory = this.createInventory();
-            this.inv = swapInvs(inventory);
+            swapInvs(inventory);
 
         }
 
@@ -58,7 +58,7 @@ public class BountyInventory extends me.nanigans.pandorabounties.Inventories.Inv
 
         this.setPage(this.getPage()-1);
         final Inventory inv = this.createInventory();
-        this.inv = swapInvs(inv);
+        swapInvs(inv);
 
     }
 

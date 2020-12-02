@@ -1,5 +1,6 @@
 package me.nanigans.pandorabounties.Commands;
 
+import com.earth2me.essentials.Essentials;
 import me.nanigans.pandorabounties.Inventories.BountyInventory;
 import me.nanigans.pandorabounties.Utils.Config.Config;
 import org.apache.commons.lang.math.NumberUtils;
@@ -10,6 +11,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.math.BigDecimal;
 
 public class Bounty implements CommandExecutor {
 
@@ -38,6 +41,7 @@ public class Bounty implements CommandExecutor {
 
                                 double number = Double.parseDouble(args[1]);
                                 Config.setPlayerBounty(player, bounty, number);
+                                Essentials.getPlugin(Essentials.class).getUser(player).takeMoney(BigDecimal.valueOf(number));
                                 return true;
 
                             }else{
